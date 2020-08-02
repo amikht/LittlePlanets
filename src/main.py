@@ -127,6 +127,6 @@ planet = Image.fromarray(np.uint8(landscape))
 planet.show()
 
 # Add seconds since epoch to beginning of filename to ensure unique name
-filename = ".\\results\\" + time.gmtime() + "_planet.jpg"
+filename = ".\\results\\" + str(time.time()) + "_planet.jpg"
 
 planet.save(filename)
