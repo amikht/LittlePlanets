@@ -4,15 +4,20 @@ from noise import pnoise2
 import numpy as np
 from PIL import Image
 from math import sqrt
+import time
 
-#sea_level = randint(500, 550)
-sea_level = 550
-#beach_level = randint(145, 155)
-beach_level = 600
+
+sea_level = randint(450, 600)
+
+beach_level = randint(550, 650)
+beach_level = beach_level if beach_level <= sea_level else beach_level + 51
+
 #ground_level = randint(155, 170)
-ground_level = 675
+ground_level = randint(650, 725)
+ground_level = ground_level if ground_level <= beach_level else ground_level + 2
 #mountain_level = randint(170, 180)
-mountain_level = 800
+mountain_level = randint(700, 950)
+mountain_level = mountain_level if mountain_level <= ground_level else mountain_level + 26
 
 PLANET_DIAMETER = 1000
 
@@ -120,4 +125,8 @@ for i in range(1, shape[0] + 1):
 # Process and output image using PIL
 planet = Image.fromarray(np.uint8(landscape))
 planet.show()
-planet.save("planet.jpg")
+
+# Add seconds since epoch to beginning of filename to ensure unique name
+filename = ".\\results\\" + time.gmtime() + "_planet.jpg"
+
+planet.save(filename)
