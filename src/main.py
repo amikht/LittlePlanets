@@ -1,5 +1,5 @@
 import sys
-from random import randint
+import random
 from noise import pnoise2
 import numpy as np
 from PIL import Image
@@ -7,16 +7,16 @@ from math import sqrt
 import time
 
 
-sea_level = randint(450, 600)
+sea_level = random.randint(450, 600)
 
-beach_level = randint(550, 650)
+beach_level = random.randint(550, 650)
 beach_level = beach_level if beach_level <= sea_level else beach_level + 51
 
 #ground_level = randint(155, 170)
-ground_level = randint(650, 725)
+ground_level = random.randint(650, 725)
 ground_level = ground_level if ground_level <= beach_level else ground_level + 2
 #mountain_level = randint(170, 180)
-mountain_level = randint(700, 950)
+mountain_level = random.randint(700, 950)
 mountain_level = mountain_level if mountain_level <= ground_level else mountain_level + 26
 
 PLANET_DIAMETER = 1000
@@ -27,9 +27,11 @@ shape = (PLANET_DIAMETER, PLANET_DIAMETER, 3)
 # Parameters for noise function
 octaves = 6
 freq = 32.0 * octaves
-b = randint(0, 500)
+b = random.randint(0, 100)
+offset_x = random.randint(0, 10000)
+offset_y = random.randint(0, 10000)
 
-colorgen = lambda: [[randint(0, 255) for i in range(3)] for i in range(5)]
+colorgen = lambda: [[random.randint(0, 255) for i in range(3)] for i in range(5)]
 
 
 colors = colorgen()
@@ -115,10 +117,13 @@ def world_mask(x, y, val):
 landscape = np.zeros(shape)
 
 # Generate noise and process it into planet image
-for i in range(1, shape[0] + 1):
+for i in range(1, shape[0] + 1): # For some reason, values of 0 on the i
+                                 # axis causes the Perlin function to only
+                                 # output values of 0, for some reason the
+                                 # domain starts at 1 for this axis.
     for j in range(shape[1]):
         landscape[i - 1, j] = convert_noise(j, i,
-                    pnoise2(i/freq, j/freq, octaves, 0.45, base=b),
+                    pnoise2((i + offset_x)/freq, (j + offset_y)/freq, octaves, 0.45, base=b),
                     [caps_mask, world_mask]
                     )
 
